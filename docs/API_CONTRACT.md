@@ -39,9 +39,10 @@ Data is persisted in a relational database; API behavior is defined by HTTP sema
 - A repeated logical request may return:
   - `201 Created` for the first successful write,
   - `200 OK` with `duplicate=true` for duplicate replay.
-- On throttling, API returns `429 Too Many Requests` and may include:
+- On throttling for **single-lead ingest** (`POST /api/v1/ingest/leads`), API returns `429 Too Many Requests` and includes:
   - `Retry-After: <seconds>` header
   - body `{ "retryAfterSeconds": <int> }`
+- For **bulk ingest** (`POST /api/v1/ingest/leads/bulk`), the API returns `200 OK` with per-item outcomes; throttled items are reported as `status: "rate_limited"`. When any items are throttled, the response **may** include `Retry-After: <seconds>`.
 
 ## 5. Data Contracts
 
@@ -159,12 +160,32 @@ Processes multiple leads in a single request and returns per-item status.
   ]
 }
 ```
+- `200 OK` (bulk throttling is per-item)
+```json
+{
+  "total": 3,
+  "created": 1,
+  "duplicate": 0,
+  "rateLimited": 1,
+  "failed": 1,
+  "items": [
+    { "index": 1, "leadId": "8ef69af7-b675-4f7f-8bb0-9fcb85f8d9d9", "status": "created", "message": null },
+    { "index": 2, "leadId": null, "status": "rate_limited", "message": "Retry after 60s" },
+    { "index": 3, "leadId": null, "status": "failed", "message": "Validation or business rule error" }
+  ]
+}
+```
+- `items[].status` values:
+  - `created`
+  - `duplicate`
+  - `rate_limited`
+  - `failed`
 - `400 Bad Request`
 ```json
 { "message": "Request body must contain at least one lead." }
 ```
 - `401 Unauthorized`
-- `429 Too Many Requests` (may include `Retry-After`)
+- `Retry-After: <seconds>` response header may be present when any items are `rate_limited`.
 
 ---
 
