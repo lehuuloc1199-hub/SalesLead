@@ -8,6 +8,19 @@ Modular monolith (.NET 8) aligned with `docs/SYSTEM_DESIGN.md`: **multi-tenant**
 - API contract: `docs/API_CONTRACT.md`
 - Note: this repository implements **Phase 1** in `docs/SYSTEM_DESIGN.md` (single API process + SQLite, no Redis/Kafka broker runtime).
 
+## Video Submission (Code Challenge)
+
+Video walkthrough (5-10 minutes):  
+[LocLe_Keyloop_ScenarioC_SalesLead_Walkthrough.mp4](https://drive.google.com/file/d/1aN1phPOoudfwcMb5__XcQY4xsuE6yLb-/view)
+
+The video covers:
+
+- A brief introduction to myself and the chosen scenario.
+- A walkthrough of system design and implementation highlights.
+- A summary of the AI collaboration story (1-2 minutes).
+- A brief demonstration of the application.
+- Key learnings and challenges faced.
+
 ## Prerequisites
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
